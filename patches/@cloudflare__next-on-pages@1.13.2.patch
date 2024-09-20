@@ -1,0 +1,27 @@
+diff --git a/dist/index.js b/dist/index.js
+index 4cb150acd490b4ec5c6d1884b2f7819ef6866dc2..df72cab2983b7032c945c074aaacaf6ebebfc755 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -12907,6 +12907,10 @@ async function buildFile(contents, filePath, { relativeTo } = {}) {
+     )
+   );
+   await (0, import_promises8.mkdir)((0, import_node_path7.dirname)(filePath), { recursive: true });
++  const nextBuildID = await (0, import_promises3.readFile)(
++    (0, import_path4.resolve)('.next', 'BUILD_ID'),
++    'utf8',
++  );
+   await (0, import_esbuild2.build)({
+     stdin: { contents },
+     target: "es2022",
+@@ -12915,7 +12919,10 @@ async function buildFile(contents, filePath, { relativeTo } = {}) {
+     bundle: true,
+     external: ["node:*", `${relativeNopDistPath}/*`, "*.wasm", "cloudflare:*"],
+     minify: true,
+-    plugins: [builtInModulesPlugin]
++    plugins: [builtInModulesPlugin],
++    define: {
++      'process.env.__NEXT_BUILD_ID': JSON.stringify(nextBuildID),
++    },
+   });
+ }
+ function getRelativePathToAncestor(opts) {
